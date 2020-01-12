@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
+
 namespace AzureDevops.Controllers
 {
     [Route("api/[controller]")]
@@ -22,7 +23,9 @@ namespace AzureDevops.Controllers
         [HttpGet("Get")]
         public IActionResult Get()
         {
-            return Ok(context.Weather.ToList());
+            var remoteIpAddress = HttpContext.Connection.RemoteIpAddress.ToString();
+            var ipaddress = HttpContext.GetServerVariable("REMOTE_ADDR");
+            return Ok(ipaddress); 
         }
         [HttpGet("ip")]
         public async Task<IActionResult> GetIp()
