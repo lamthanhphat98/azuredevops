@@ -20,5 +20,11 @@ namespace AzureDevops.Controllers.Tests
             Assert.AreEqual("Bangkok", getWeather.Name);
             
         }
+        [TestMethod()]
+        public void Test()
+        {
+            Assert.AreEqual(2, 2);
+
+        }
     }
 }
