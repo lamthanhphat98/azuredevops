@@ -5,7 +5,12 @@ VisualStudioVersion = 16.0.29424.173
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureDevops", "AzureDevops\AzureDevops.csproj", "{A3A8E8E9-3C89-4FC2-BDE7-3D9EBB300411}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzureDevopsTests", "AzureDevopsTests2\AzureDevopsTests.csproj", "{90A8F206-38D2-4BE8-B71D-6B26AB7D4DAE}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7A0A0DC2-DCBA-4B05-8689-8DD5E5121E92}"
+	ProjectSection(SolutionItems) = preProject
+		.filenesting.json = .filenesting.json
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{79FA229E-B66A-4C28-B860-3C9C273D1010}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +22,10 @@ Global
 		{A3A8E8E9-3C89-4FC2-BDE7-3D9EBB300411}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3A8E8E9-3C89-4FC2-BDE7-3D9EBB300411}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3A8E8E9-3C89-4FC2-BDE7-3D9EBB300411}.Release|Any CPU.Build.0 = Release|Any CPU
-		{90A8F206-38D2-4BE8-B71D-6B26AB7D4DAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{90A8F206-38D2-4BE8-B71D-6B26AB7D4DAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{90A8F206-38D2-4BE8-B71D-6B26AB7D4DAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{90A8F206-38D2-4BE8-B71D-6B26AB7D4DAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79FA229E-B66A-4C28-B860-3C9C273D1010}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79FA229E-B66A-4C28-B860-3C9C273D1010}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79FA229E-B66A-4C28-B860-3C9C273D1010}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79FA229E-B66A-4C28-B860-3C9C273D1010}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
