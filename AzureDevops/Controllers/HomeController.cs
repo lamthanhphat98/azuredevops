@@ -38,6 +38,12 @@ namespace AzureDevops.Controllers
             var ipaddress = HttpContext.GetServerVariable("REMOTE_ADDR");
             return Ok(ipaddress); 
         }
+        [HttpGet("Get2")]
+        public IActionResult Get2()
+        {
+            
+            return Ok("New commit");
+        }
         [HttpGet("ip")]
         public async Task<IActionResult> GetIp()
         {
