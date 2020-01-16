@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -20,6 +21,16 @@ namespace AzureDevops.Controllers
         {
             context = _context;
         }
+        [HttpGet("Delete")]
+        public IActionResult Delete()
+        {
+            if(Directory.Exists("G:\\CN3\\Deleted"))
+            {
+                Directory.Delete("G:\\CN3\\Deleted");
+            }
+            return Ok(true);
+        }
+
         [HttpGet("Get")]
         public IActionResult Get()
         {
