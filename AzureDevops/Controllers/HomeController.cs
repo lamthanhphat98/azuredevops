@@ -24,9 +24,15 @@ namespace AzureDevops.Controllers
         [HttpGet("Delete")]
         public IActionResult Delete()
         {
-            if(Directory.Exists("G:\\CN3\\Deleted"))
+            if(Directory.Exists("G:\\CN3\\submission"))
             {
-                Directory.Delete("G:\\CN3\\Deleted");
+                String[] getAllFilesPath = Directory.GetFiles("G:\\CN3\\submission");
+                foreach (var item in getAllFilesPath)
+                {
+                    String filePath = item; 
+                    //append Thuc's code
+                }
+              
             }
             return Ok(true);
         }
@@ -72,7 +78,6 @@ namespace AzureDevops.Controllers
             {
                 using (HttpResponseMessage response = await client.GetAsync(url))
                 {
-
                     using (HttpContent content = response.Content)
                     {
                         responseContent = await  content.ReadAsStringAsync();
@@ -81,7 +86,6 @@ namespace AzureDevops.Controllers
             }
             var IpModel = JsonConvert.DeserializeObject<IpModel>(responseContent);
             return Ok(IpModel);
-
         }
     }
 }

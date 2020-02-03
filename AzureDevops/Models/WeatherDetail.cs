@@ -12,7 +12,7 @@ namespace AzureDevops.Models
         public int? Rain { get; set; }
         public int? WindSpeed { get; set; }
         public DateTime? Date { get; set; }
-
+        public String Name { get; set; }
         public virtual Weather Weather { get; set; }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using AzureDevops.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -29,9 +30,11 @@ namespace AzureDevops
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-
+            services.AddAutoMapper(typeof(Startup));
+            //local sql
             services.AddDbContext<WeatherContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            //hosting sql
             services.AddControllers().AddNewtonsoftJson(
             options =>
             options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
