@@ -33,7 +33,7 @@ namespace AzureDevops
             services.AddAutoMapper(typeof(Startup));
             //local sql
             services.AddDbContext<WeatherContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("HostingConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             //hosting sql
             services.AddControllers().AddNewtonsoftJson(
             options =>

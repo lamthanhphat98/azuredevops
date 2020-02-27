@@ -8,6 +8,7 @@ using AzureDevops.Models.ViewModels;
 using AzureDevops.Ultilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AzureDevops.Controllers
 {
@@ -27,12 +28,15 @@ namespace AzureDevops.Controllers
         public IActionResult PostWeather(WeatherClientModel weatherClient)
         {
             var weather = mapper.Map<Weather>(weatherClient);
+            weather.Tempure = weatherClient.TempureMorning;
             context.Weather.Add(weather);
             context.SaveChanges();
             var weatherDetail = mapper.Map<WeatherDetail>(weatherClient);
             weatherDetail.WeatherId = weather.Id;
             weatherDetail.DayOfWeek = ConvertToDay.ConvertIntToDay(weatherClient.DayOfWeek);
             weatherDetail.Name = weatherClient.Name;
+            weatherDetail.TempureMorning = weatherClient.TempureMorning;
+            weatherDetail.TempureNight = weatherClient.TempureNight;
             context.WeatherDetail.Add(weatherDetail);
             context.SaveChanges();
             return Ok(true);
@@ -40,9 +44,9 @@ namespace AzureDevops.Controllers
         [HttpGet("weather")]
         public IActionResult GetWeathersToday()
         {
-            var today = DateTime.Today;
-            var allWeather = context.Weather.Where(x => x.Date.Equals(today)).ToList();
-            return Ok(allWeather);
+            var today = DateTime.Today;       
+            var getall = context.Weather.Where(x => x.Date.Equals(today)).OrderByDescending(x => x.Id).AsEnumerable().GroupBy(x => x.Name).Select(x=>x.First()).ToList();
+            return Ok(getall);
         }
         [HttpGet("weather_header")]
         public IActionResult GetHeaderWeather([FromQuery] String location)
@@ -51,14 +55,14 @@ namespace AzureDevops.Controllers
             if(location.Split("_").Length != 0)
             {
                 location = location.Replace("_", " ");
-                var getLocation = context.Weather.Where(x => x.Date.Equals(today) && x.Name.Equals(location)).FirstOrDefault();
-                var getRandomWeather = context.Weather.Where(x => x.Date.Equals(today) && x.Id != getLocation.Id).OrderBy(x => Guid.NewGuid()).Take(4).ToList();
+                var getLocation = context.Weather.Where(x => x.Date.Equals(today) && x.Name.Equals(location)).OrderByDescending(x=>x.Id).FirstOrDefault();
+                var getRandomWeather = context.Weather.Where(x => x.Date.Equals(today) && x.Id != getLocation.Id && !x.Name.Equals(getLocation.Name)).OrderBy(x => Guid.NewGuid()).Take(4).ToList();
                 getRandomWeather.Add(getLocation);
                 return Ok(getRandomWeather);
             }else
             {
-                var getLocation = context.Weather.Where(x => x.Date.Equals(today) && x.Name.Equals(location)).FirstOrDefault();
-                var getRandomWeather = context.Weather.Where(x => x.Date.Equals(today) && x.Id != getLocation.Id).OrderBy(x => Guid.NewGuid()).Take(4).ToList();
+                var getLocation = context.Weather.Where(x => x.Date.Equals(today) && x.Name.Equals(location)).OrderByDescending(x => x.Id).FirstOrDefault();
+                var getRandomWeather = context.Weather.Where(x => x.Date.Equals(today) && x.Id != getLocation.Id && !x.Name.Equals(getLocation.Name)).OrderBy(x => Guid.NewGuid()).Take(4).ToList();
                 getRandomWeather.Add(getLocation);
                 return Ok(getRandomWeather);
             }            
@@ -67,8 +71,18 @@ namespace AzureDevops.Controllers
         [HttpGet("weather_detail")]
         public IActionResult GetAllWeatherByName([FromQuery] String name)
         {
-            var getDetails = context.WeatherDetail.Where(x=>x.Name.Equals(name)).OrderByDescending(x => x.Id).Take(7).ToList();
+            //var getDetail = context.WeatherDetail.Where(x => x.Name.Equals(name)).ToList();
+            var today = DateTime.Now;
+            var getDetails = context.WeatherDetail.Include(x=>x.Weather).Where(x=>x.Name.Equals(name) && x.Date >= today).OrderByDescending(x => x.Id).Take(7).ToList();
             return Ok(getDetails.OrderBy(x=>x.Id));
+        }
+
+        [HttpGet("weather_detail_id")]
+        public IActionResult GetWeatherById([FromQuery] int id)
+        {
+            //var getDetail = context.WeatherDetail.Where(x => x.Name.Equals(name)).ToList();
+            var getDetails = context.WeatherDetail.Include(x=>x.Weather).Where(x => x.Id == id).FirstOrDefault();
+            return Ok(getDetails);
         }
         [HttpGet("suggest_search")]
         public IActionResult GetAllCityNameBySearchKeyword([FromQuery] String name)
@@ -83,7 +97,7 @@ namespace AzureDevops.Controllers
             var getUser = context.Users.Where(u => u.Username == user.Username && u.Password == user.Password).FirstOrDefault();
             if(getUser!= null)
             {
-                return Ok(true);
+                return Ok(getUser.Name);
             }
             return NotFound("Username or password maybe wrong");
         }

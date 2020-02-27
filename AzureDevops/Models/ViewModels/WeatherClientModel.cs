@@ -10,7 +10,8 @@ namespace AzureDevops.Models.ViewModels
         public string Name { get; set; }
         public string Country { get; set; }
         public string Region { get; set; }
-        public int? Tempure { get; set; }
+        public int? TempureMorning { get; set; }
+        public int? TempureNight { get; set; }
         public string WeatherCondition { get; set; }
         public int DayOfWeek { get; set; }
         public int? Rain { get; set; }

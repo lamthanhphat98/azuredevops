@@ -60,6 +60,8 @@ namespace AzureDevops.Models
 
                 entity.Property(e => e.DayOfWeek).HasMaxLength(50);
 
+                entity.Property(e => e.Name).HasMaxLength(50);
+
                 entity.HasOne(d => d.Weather)
                     .WithMany(p => p.WeatherDetail)
                     .HasForeignKey(d => d.WeatherId)

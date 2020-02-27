@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace AzureDevops.Models
@@ -17,7 +18,7 @@ namespace AzureDevops.Models
         public int? Tempure { get; set; }
         public string WeatherCondition { get; set; }
         public DateTime? Date { get; set; }
-
+        [JsonIgnore]
         public virtual ICollection<WeatherDetail> WeatherDetail { get; set; }
     }
 }
