@@ -14,5 +14,11 @@ namespace AzureDevops.Controllers.Tests
         {
             Assert.AreEqual(2, 2);
         }
+
+        [TestMethod()]
+        public void GetTest2()
+        {
+            Assert.AreEqual(3, 3);
+        }
     }
 }

@@ -7,6 +7,7 @@ namespace AzureDevops.Models.ViewModels
 {
     public class WeatherClientModel
     {
+      
         public string Name { get; set; }
         public string Country { get; set; }
         public string Region { get; set; }

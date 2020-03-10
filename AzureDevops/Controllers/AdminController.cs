@@ -27,20 +27,51 @@ namespace AzureDevops.Controllers
         [HttpPost("weather")]
         public IActionResult PostWeather(WeatherClientModel weatherClient)
         {
-            var weather = mapper.Map<Weather>(weatherClient);
-            weather.Tempure = weatherClient.TempureMorning;
-            context.Weather.Add(weather);
-            context.SaveChanges();
-            var weatherDetail = mapper.Map<WeatherDetail>(weatherClient);
-            weatherDetail.WeatherId = weather.Id;
-            weatherDetail.DayOfWeek = ConvertToDay.ConvertIntToDay(weatherClient.DayOfWeek);
-            weatherDetail.Name = weatherClient.Name;
-            weatherDetail.TempureMorning = weatherClient.TempureMorning;
-            weatherDetail.TempureNight = weatherClient.TempureNight;
-            context.WeatherDetail.Add(weatherDetail);
-            context.SaveChanges();
+            var getWeather = context.Weather.Where(x => x.Name.Equals(weatherClient.Name) && x.Date.Equals(weatherClient.Date)).Include(x=>x.WeatherDetail).FirstOrDefault();
+            if (getWeather != null)
+            {
+                getWeather.Name = weatherClient.Name;
+                getWeather.Region = weatherClient.Region;
+                getWeather.Tempure = weatherClient.TempureMorning;
+                getWeather.WeatherCondition = weatherClient.WeatherCondition;
+                getWeather.Country = weatherClient.Country;
+                context.Weather.Update(getWeather);
+                context.SaveChanges();
+                var weatherDetail = context.WeatherDetail.Where(x => x.Id == getWeather.WeatherDetail.FirstOrDefault().Id).FirstOrDefault();              
+                weatherDetail.DayOfWeek = ConvertToDay.ConvertIntToDay(weatherClient.DayOfWeek);
+                weatherDetail.Name = weatherClient.Name;
+                weatherDetail.TempureMorning = weatherClient.TempureMorning;
+                weatherDetail.TempureNight = weatherClient.TempureNight;
+                weatherDetail.Rain = weatherClient.Rain;
+                weatherDetail.WindSpeed = weatherClient.WindSpeed;
+                context.WeatherDetail.Update(weatherDetail);
+                context.SaveChanges();
+            }else
+            {
+                var weather = mapper.Map<Weather>(weatherClient);
+                weather.Tempure = weatherClient.TempureMorning;
+                context.Weather.Add(weather);
+                context.SaveChanges();
+                var weatherDetail = mapper.Map<WeatherDetail>(weatherClient);
+                weatherDetail.WeatherId = weather.Id;
+                weatherDetail.DayOfWeek = ConvertToDay.ConvertIntToDay(weatherClient.DayOfWeek);
+                weatherDetail.Name = weatherClient.Name;
+                weatherDetail.TempureMorning = weatherClient.TempureMorning;
+                weatherDetail.TempureNight = weatherClient.TempureNight;
+                context.WeatherDetail.Add(weatherDetail);
+                context.SaveChanges();
+            }
+           
             return Ok(true);
         }
+
+        [HttpPost("update_weather")]
+        public IActionResult UpdateWeather(WeatherClientModel weatherClient)
+        {
+                 
+            return Ok(true);
+        }
+
         [HttpGet("weather")]
         public IActionResult GetWeathersToday()
         {
@@ -74,7 +105,7 @@ namespace AzureDevops.Controllers
             //var getDetail = context.WeatherDetail.Where(x => x.Name.Equals(name)).ToList();
             var today = DateTime.Now;
             var getDetails = context.WeatherDetail.Include(x=>x.Weather).Where(x=>x.Name.Equals(name) && x.Date >= today).OrderByDescending(x => x.Id).Take(7).ToList();
-            return Ok(getDetails.OrderBy(x=>x.Id));
+            return Ok(getDetails.OrderBy(x=>x.Date));
         }
 
         [HttpGet("weather_detail_id")]
@@ -87,8 +118,10 @@ namespace AzureDevops.Controllers
         [HttpGet("suggest_search")]
         public IActionResult GetAllCityNameBySearchKeyword([FromQuery] String name)
         {
-            var getCityNames = context.Weather.Where(x=>x.Name.Contains(name)).Take(5).ToList();
-            return Ok(getCityNames);
+            var today = DateTime.Today;
+            var result = context.Weather.ToList().Where(x=>x.Name.Contains(name)).GroupBy(test => test.Name)
+                   .Select(grp => grp.First()).Take(5).ToList();
+            return Ok(result);
         }
 
         [HttpPost("login")]
