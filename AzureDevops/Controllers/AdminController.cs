@@ -108,6 +108,38 @@ namespace AzureDevops.Controllers
             return Ok(getDetails.OrderBy(x=>x.Date));
         }
 
+        [HttpGet("chatbot_weather")]
+        public IActionResult GetWeatherByName([FromQuery] String name)
+        {
+            //var getDetail = context.WeatherDetail.Where(x => x.Name.Equals(name)).ToList();
+            var today = DateTime.Now;
+            if (name.Split("_").Length != 0)
+            {
+                name = name.Replace("_", " ");
+                var getDetail = context.Weather.Where(x => x.Name.Equals(name) && x.Date >= today).FirstOrDefault();
+                var messages1 = "Your location is " + getDetail.Name + " in " + getDetail.Country;
+                var messages2 = "The weather of your location is " + getDetail.Tempure + " with the weather condition is "+getDetail.WeatherCondition;
+                var responseMsg = new ChatbotMessage();
+                responseMsg.Messages = new List<TextMessage>();
+                responseMsg.Messages.Add(new TextMessage() { Text=messages1 });
+                responseMsg.Messages.Add(new TextMessage() { Text=messages2, });
+                return Ok(responseMsg);
+            }
+            else
+            {
+                var getDetail = context.Weather.Where(x => x.Name.Equals(name) && x.Date >= today).FirstOrDefault();
+                var messages1 = "Your location is " + getDetail.Name + " in " + getDetail.Country;
+                var messages2 = "The weather of your location is " + getDetail.Tempure + " with the weather condition is " + getDetail.WeatherCondition;
+                var responseMsg = new ChatbotMessage();
+                responseMsg.Messages = new List<TextMessage>();
+                responseMsg.Messages.Add(new TextMessage() { Text = messages1 });
+                responseMsg.Messages.Add(new TextMessage() { Text = messages2, });
+                return Ok(responseMsg);
+
+            }
+        }
+
+
         [HttpGet("weather_detail_id")]
         public IActionResult GetWeatherById([FromQuery] int id)
         {
