@@ -18,5 +18,7 @@ namespace AzureDevops.Models.ViewModels
         public int? Rain { get; set; }
         public int? WindSpeed { get; set; }
         public DateTime? Date { get; set; }
+
+        public int WeatherId { get; set; }
     }
 }

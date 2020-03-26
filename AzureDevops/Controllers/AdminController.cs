@@ -27,7 +27,7 @@ namespace AzureDevops.Controllers
         [HttpPost("weather")]
         public IActionResult PostWeather(WeatherClientModel weatherClient)
         {
-            var getWeather = context.Weather.Where(x => x.Name.Equals(weatherClient.Name) && x.Date.Equals(weatherClient.Date)).Include(x=>x.WeatherDetail).FirstOrDefault();
+            var getWeather = context.Weather.Where(x => x.Id == weatherClient.WeatherId).Include(x=>x.WeatherDetail).FirstOrDefault();
             if (getWeather != null)
             {
                 getWeather.Name = weatherClient.Name;
