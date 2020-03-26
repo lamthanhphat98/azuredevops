@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using AutoMapper;
 using AzureDevops.Models;
@@ -9,6 +11,7 @@ using AzureDevops.Ultilities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace AzureDevops.Controllers
 {
@@ -165,6 +168,80 @@ namespace AzureDevops.Controllers
                 return Ok(getUser.Name);
             }
             return NotFound("Username or password maybe wrong");
+        }
+
+
+        [HttpGet("coronavirus")]
+        public async Task<IActionResult> TrackCoronaVirus()
+        {
+            var resultAll = await CoronaAPI(null);
+            if(resultAll != null)
+            {
+                var resultVietnam = await CoronaAPI("Vietnam");
+                if(resultVietnam != null)
+                {
+                    resultAll.Response.Add(resultVietnam.Response[0]);
+                    return Ok(resultAll);
+                }
+            }
+            return BadRequest("You cannot access to this api");
+        }
+
+        public async Task<ResponseCoronaAPI> CoronaAPI(String country)
+        {
+            string responseContent = "";
+            if(country != null)
+            {
+                string url = "https://covid-193.p.rapidapi.com/statistics?country=" + country;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    client.DefaultRequestHeaders.Accept.Add(
+                       new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                    client.DefaultRequestHeaders.Add("x-rapidapi-key", "88a304d7damsh81ed76a1be3db2ep12c219jsndacf2907395c");
+
+                    using (HttpResponseMessage response = await client.GetAsync(""))
+                    {
+
+                        using (HttpContent content = response.Content)
+                        {
+                            responseContent = await content.ReadAsStringAsync();
+                            if (responseContent.Length != 0)
+                            {
+                                var coronaVirus = JsonConvert.DeserializeObject<ResponseCoronaAPI>(responseContent);
+                                return coronaVirus;
+                            }
+                        }
+                    }
+                }
+            }else
+            {
+                string url = "https://covid-193.p.rapidapi.com/statistics?country=all" ;
+                using (HttpClient client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(url);
+                    client.DefaultRequestHeaders.Accept.Add(
+                       new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+                    client.DefaultRequestHeaders.Add("x-rapidapi-key", "88a304d7damsh81ed76a1be3db2ep12c219jsndacf2907395c");
+
+                    using (HttpResponseMessage response = await client.GetAsync(""))
+                    {
+
+                        using (HttpContent content = response.Content)
+                        {
+                            responseContent = await content.ReadAsStringAsync();
+                            if (responseContent.Length != 0)
+                            {
+                                var coronaVirus = JsonConvert.DeserializeObject<ResponseCoronaAPI>(responseContent);
+                                return coronaVirus;
+                            }
+                        }
+                    }
+                }
+            }
+            
+            return null;
+
         }
     }
 }
