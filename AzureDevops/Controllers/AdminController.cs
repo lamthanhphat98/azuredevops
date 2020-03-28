@@ -183,7 +183,7 @@ namespace AzureDevops.Controllers
             {
                 if (location != null)
                 {
-                    location = location.Replace(" ", ""); // this is new comment
+                    location = location.Replace(" ", ""); // asdasdthis is new comment
                     var resultLocation = await CoronaAPI(location);
                     if (resultLocation != null)
                     {
