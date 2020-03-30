@@ -34,7 +34,7 @@ namespace AzureDevops.Controllers
             var getWeather = context.Weather.Where(x => x.Id == weatherClient.WeatherId).Include(x => x.WeatherDetail).FirstOrDefault();
             if (getWeather != null)
             {
-                getWeather.Name = weatherClient.Name;
+                getWeather.Name = weatherClient.Name; // cmtasdasd
                 getWeather.Region = weatherClient.Region;
                 getWeather.Tempure = weatherClient.TempureMorning;
                 getWeather.WeatherCondition = weatherClient.WeatherCondition;
